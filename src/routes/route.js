@@ -8,5 +8,7 @@ router.post("/createCollege",collegeController.collegeCreate)
 
 router.post("/createintern",internController.internCreate)
 
+router.get("/getcollegeDetails",collegeController.getcollegeDetails)
+
 
 module.exports = router;
