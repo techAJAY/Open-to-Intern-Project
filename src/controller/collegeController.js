@@ -1,4 +1,3 @@
-const mongoose = require('mongoose')
 const collegeModel = require("../model/collegeModel")
 const internModel  = require("../model/internModel")
 
@@ -8,7 +7,6 @@ const internModel  = require("../model/internModel")
 const isValid = function (value) {
     if (typeof value === 'undefined' || value === null) return false
     if (typeof value === 'string' && value.trim().length === 0) return false
-    if (typeof value === 'number'  ) return false
     return true;
 }
 
@@ -88,7 +86,7 @@ const getcollegeDetails = async function (req, res) {
      }
 
      collegeName = collegeName.toLowerCase()
-     
+
      // college validation 
 
      let collegeDetail = await collegeModel.findOne({ name: collegeName, isDeleted: false })
@@ -102,9 +100,9 @@ const getcollegeDetails = async function (req, res) {
      let internDetail = await internModel.find({ collegeId: collegeDetail._id, isDeleted: false }).select({ _id: 1, name: 1, email: 1, mobile: 1 })
     
      let result = {
-         name: collegeDetail.name,
-         fullName: collegeDetail.fullName,
-         logoLink: collegeDetail.logoLink,
+         name: collegeDetail1.name,
+         fullName: collegeDetail1.fullName,
+         logoLink: collegeDetail1.logoLink,
          interests: internDetail
      }
     return res.status(200).send({ status: true, data: result })
