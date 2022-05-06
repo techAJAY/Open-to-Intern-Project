@@ -8,6 +8,7 @@ const internModel  = require("../model/internModel")
 const isValid = function (value) {
     if (typeof value === 'undefined' || value === null) return false
     if (typeof value === 'string' && value.trim().length === 0) return false
+    if (typeof value === 'number'  ) return false
     return true;
 }
 
@@ -35,6 +36,16 @@ const collegeCreate = async function (req, res) {
             res.status(400).send({ status: false, message: 'college name is required' })
             return
         }
+
+        if (!/^[a-zA-Z.-]+$/.test( requestBody.name)) {
+            return res.status(400).send({ status: false, message: "Please enter valid college name " })
+        }
+        let check = await collegeModel.findOne({ name: requestBody.name })
+        if (check) {
+            return res.status(400).send({ status: false, message: "This college is already exist." })
+        }
+        
+        
         if (!isValid(requestBody.fullName)) {
             res.status(400).send({ status: false, message: 'college full name is required' })
             return
@@ -45,11 +56,6 @@ const collegeCreate = async function (req, res) {
         }
 
         // unique validation  >
-
-        let uniqueNameCheck = await collegeModel.findOne({name:requestBody.name})
-        if(uniqueNameCheck){
-        return res.status(400).send({status:false,msg:"this name already exist"})
-        }
 
         let uniqueFullNameCheck = await collegeModel.findOne({fullName:requestBody.fullName})
         if(uniqueFullNameCheck){
@@ -71,41 +77,88 @@ const collegeCreate = async function (req, res) {
 
 
 
-const getcollegeDetails = async function(req, res) {
-    try {
-        let collegeName = req.query.collegeName.toLowerCase();
+// const getcollegeDetails = async function(req, res) {
+//     try {
+//         let collegeName = req.query.collegeName.toLowerCase();
 
-        // request query params  validation
+//         // request query params  validation
 
-        if (!collegeName) {
-            return res.status(404).send({ status: false, msg: "please provide college name in query params" })
-        }
+//         if (!collegeName) {
+//             return res.status(404).send({ status: false, msg: "please provide college name in query params" })
+//         }
 
-        // college validation 
+//         // college validation 
 
-        let collegeDetail = await collegeModel.findOne({ name: collegeName, isDeleted: false })
-        if (!collegeDetail) {
-            res.status(404).send({ status: false, msg: "college not found please provide valid college name" })
-        }
+//         let collegeDetail = await collegeModel.findOne({ name: collegeName, isDeleted: false })
+//         if (!collegeDetail) {
+//             res.status(404).send({ status: false, msg: "college not found please provide valid college name" })
+//         }
 
         
-        let collegeDetail1 = await collegeModel.findOne({ name: collegeName, isDeleted: false }).select({ name: 1, fullName: 1, logoLink: 1, _id: 0 })
-        let internDetail = await internModel.find({ collegeId: collegeDetail._id, isDeleted: false }).select({ _id: 1, name: 1, email: 1, mobile: 1 })
+//         let collegeDetail1 = await collegeModel.findOne({ name: collegeName, isDeleted: false }).select({ name: 1, fullName: 1, logoLink: 1, _id: 0 })
+//         let internDetail = await internModel.find({ collegeId: collegeDetail._id, isDeleted: false }).select({ _id: 1, name: 1, email: 1, mobile: 1 })
        
-        let result={
+//         let result={
+                 
+//                name: collegeDetail.name,
+//                fullName: collegeDetail.fullName,
+//                 logoLink: collegeDetail.logoLink,
+//                 interestes:internDetail,
 
-                data:collegeDetail1,
-                interestes:internDetail,
+//         }
 
-        }
+//         res.status(200).send({ status: true, data: result })
+//     } catch (error) {
+//         res.status(500).send({ status: false, msg: error.message })
+//     }
 
-        res.status(200).send({ status: true, data: result })
-    } catch (error) {
-        res.status(500).send({ status: false, msg: error.message })
-    }
+// }
+
+
+
+
+const getcollegeDetails = async function (req, res) {
+    res.setHeader('Access-Control-Allow-Origin','*')
+ try {
+     let collegeName = req.query.collegeName.toLowerCase();
+
+     // request query params  validation
+
+     if (!collegeName) {
+         return res.status(404).send({ status: false, msg: "please provide college name in query params" })
+     }
+
+     // college validation 
+
+     let collegeDetail = await collegeModel.findOne({ name: collegeName, isDeleted: false })
+     if (!collegeDetail) {
+         res.status(404).send({ status: false, msg: "college not found please provide valid college name" })
+     }
+
+    
+     
+     let collegeDetail1 = await collegeModel.findOne({ name: collegeName, isDeleted: false }).select({ name: 1, fullName: 1, logoLink: 1, _id: 0 })
+     let internDetail = await internModel.find({ collegeId: collegeDetail._id, isDeleted: false }).select({ _id: 1, name: 1, email: 1, mobile: 1 })
+    
+     let result = {
+         name: collegeDetail.name,
+         fullName: collegeDetail.fullName,
+         logoLink: collegeDetail.logoLink,
+         interests: internDetail
+     }
+     res.status(200).send({ status: true, data: result })
+
+ } catch (error) {
+     res.status(500).send({ status: false, msg: error.message })
+ }
 
 }
 
 
+
 module.exports.collegeCreate = collegeCreate
 module.exports.getcollegeDetails = getcollegeDetails
+
+
+// 
+// 

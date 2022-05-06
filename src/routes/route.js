@@ -4,11 +4,11 @@ const collegeController = require("../controller/collegeController")
 const internController = require("../controller/internController")
 
 
-router.post("/createCollege",collegeController.collegeCreate)
+router.post("/functionup/colleges",collegeController.collegeCreate)
 
-router.post("/createintern",internController.internCreate)
+router.post("/functionup/interns",internController.internCreate)
 
-router.get("/getcollegeDetails",collegeController.getcollegeDetails)
+router.get("/functionup/collegeDetails",collegeController.getcollegeDetails)
 
 
 module.exports = router;
