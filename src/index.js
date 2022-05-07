@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 const mongoose = require('mongoose')
-mongoose.connect("mongodb+srv://gtgaurav:Wp2gKNWXbHDifb5n@cluster0.9p9yl.mongodb.net/Ajju311-DB", { useNewUrlParser: true })
+mongoose.connect("mongodb+srv://gtgaurav:Wp2gKNWXbHDifb5n@cluster0.9p9yl.mongodb.net/ajay111-DB", { useNewUrlParser: true })
     .then(() => console.log('mongodb running on cluster'))
     .catch(err => console.log(err))
 
